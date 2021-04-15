@@ -1,0 +1,160 @@
+{#<html>#}
+{#<head>#}
+{#    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>#}
+{#    <meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>#}
+{#    <style type="text/css">#}
+{#        body, html {#}
+{#            width: 100%;#}
+{#            height: 100%;#}
+{#            margin: 0;#}
+{#            font-family: "微软雅黑";#}
+{#        }#}
+{##}
+{#        #allmap {#}
+{#            height: 700px;#}
+{#            width: 100%;#}
+{#        }#}
+{##}
+{#        #r-result {#}
+{#            width: 100%;#}
+{#            font-size: 14px;#}
+{#        }#}
+{#    </style>#}
+{#    <script type="text/javascript"#}
+{#            src="http://api.map.baidu.com/api?v=2.0&ak=LNs5zff6jq8NzaA6LGWv2i5CjUkGXHWL"></script>#}
+{#    <title>经纬度定位</title>#}
+{#</head>#}
+{#<body>#}
+{#<div id="allmap"></div>#}
+{#<div id="r-result">#}
+{##}
+{#    <input type="button" value="获取我的位置" onclick="get_location()"/>#}
+{#</div>#}
+{#</body>#}
+{#</html>#}
+{#<script type="text/javascript">#}
+{##}
+{##}
+{#    // 百度地图API功能#}
+{##}
+{#    var map = new BMap.Map("allmap");#}
+{#    map.centerAndZoom(new BMap.Point(114.420338, 23.141521), 18);#}
+{#    map.enableScrollWheelZoom(true);#}
+{#    var navigationControl = new BMap.NavigationControl({#}
+{#        // 靠左上角位置#}
+{#        anchor: BMAP_ANCHOR_TOP_LEFT,#}
+{#        // LARGE类型#}
+{#        type: BMAP_NAVIGATION_CONTROL_LARGE,#}
+{#        // 启用显示定位#}
+{#        enableGeolocation: true#}
+{#    });#}
+{#    map.addControl(navigationControl);#}
+{##}
+{#    onload=function get_location() {#}
+{##}
+{#        var address_latitude ={{ address_latitude |safe}};#}
+{#        var address_longitude ={{ address_longitude|safe }};#}
+{#        var address_data ={{ address_data |safe}};#}
+{##}
+{##}
+{#        var point = []; //存放标注点经纬信息的数组#}
+{#        var marker = []; //存放标注点对象的数组#}
+{#        for (var i = 0; i < address_longitude.length; i++) {#}
+{#            point[i] = new BMap.Point(address_longitude[i], address_latitude[i]); //循环生成新的地图点#}
+{#            marker[i] = new BMap.Marker(point[i]); //按照地图点坐标生成标记#}
+{#            map.addOverlay(marker[i]);#}
+{#        }#}
+{##}
+{#        for (i = 0; i < marker.length; i++) {#}
+{#            (function () {#}
+{#                var index = i;#}
+{#                marker[index].addEventListener('click', function () {#}
+{#                    this.openInfoWindow(new BMap.InfoWindow(address_data[index]));#}
+{#                });#}
+{#            })();#}
+{#        }#}
+{#    }#}
+{##}
+{#</script>#}
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="keywords" content="百度地图,百度地图API，百度地图自定义工具，百度地图所见即所得工具" />
+    <meta name="description" content="百度地图API自定义地图，帮助用户在可视化操作下生成百度地图" />
+    <title>百度地图API自定义地图</title>
+    <!--引用百度地图API-->
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=LNs5zff6jq8NzaA6LGWv2i5CjUkGXHWL"></script>
+  </head>
+
+  <body>
+    <!--百度地图容器-->
+    <div style="width:700px;height:550px;border:#ccc solid 1px;font-size:12px" id="map"></div>
+    <p style="color:red;font-weight:600">地图生成工具基于百度地图JS api v2.0版本开发，使用请申请密匙。
+      <a href="http://developer.baidu.com/map/index.php?title=jspopular/guide/introduction" style="color:#2f83c7" target="_blank">了解如何申请密匙</a>
+      <a href="http://lbsyun.baidu.com/apiconsole/key?application=key" style="color:#2f83c7" target="_blank">申请密匙</a>
+    </p>
+  </body>
+
+  <script type="text/javascript">
+    //创建和初始化地图函数：
+    function initMap(){
+      createMap();//创建地图
+      setMapEvent();//设置地图事件
+      addMapControl();//向地图添加控件
+      addMapOverlay();//向地图添加覆盖物
+    }
+    function createMap(){
+      map = new BMap.Map("map");
+      map.centerAndZoom(new BMap.Point(114.422344,23.11463),17);
+    }
+    function setMapEvent(){
+      map.enableScrollWheelZoom();
+      map.enableKeyboard();
+      map.enableDragging();
+      map.enableDoubleClickZoom()
+    }
+    function addClickHandler(target,window){
+      target.addEventListener("click",function(){
+        target.openInfoWindow(window);
+      });
+    }
+    function addMapOverlay(){
+      var markers = [
+        {content:"test1pro",title:"test1",imageOffset: {width:-46,height:-21},position:{lat:23.113716,lng:114.423278}},
+        {content:"test2pro",title:"test2",imageOffset: {width:-46,height:-21},position:{lat:23.112187,lng:114.4245}},
+        {content:"tmjpro",title:"tmjpro",imageOffset: {width:-46,height:-21,},position:{lat:23.121485,lng:114.424021}},
+
+
+      ];
+      for(var index = 0; index < markers.length; index++ ){
+        var point = new BMap.Point(markers[index].position.lng,markers[index].position.lat);
+        var marker = new BMap.Marker(point,{icon:new BMap.Icon("http://api.map.baidu.com/lbsapi/createmap/images/icon.png",new BMap.Size(20,25),{
+          imageOffset: new BMap.Size(markers[index].imageOffset.width,markers[index].imageOffset.height)
+        })});
+        var label = new BMap.Label(markers[index].title,{offset: new BMap.Size(25,5)});
+        var opts = {
+          width: 200,
+          title: markers[index].title,
+          enableMessage: false
+        };
+        var infoWindow = new BMap.InfoWindow(markers[index].content,opts);
+        marker.setLabel(label);
+        addClickHandler(marker,infoWindow);
+        map.addOverlay(marker);
+      };
+    }
+    //向地图添加控件
+    function addMapControl(){
+      var scaleControl = new BMap.ScaleControl({anchor:BMAP_ANCHOR_BOTTOM_LEFT});
+      scaleControl.setUnit(BMAP_UNIT_IMPERIAL);
+      map.addControl(scaleControl);
+      var navControl = new BMap.NavigationControl({anchor:BMAP_ANCHOR_TOP_LEFT,type:1});
+      map.addControl(navControl);
+      var overviewControl = new BMap.OverviewMapControl({anchor:BMAP_ANCHOR_BOTTOM_RIGHT,isOpen:false});
+      map.addControl(overviewControl);
+    }
+    var map;
+      initMap();
+  </script>
+</html>
